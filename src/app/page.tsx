@@ -87,13 +87,13 @@ export default async function Home() {
             {profile && (
               <AvatarImage 
                 src={profile.avatar_url} 
-                alt="Sophie Vector's GitHub avatar"
+                alt="VectorSophie's GitHub avatar"
               />
             )}
             <AvatarFallback>SV</AvatarFallback>
           </Avatar>
           <div>
-            <h1 className="text-5xl font-headline font-bold text-primary">Sophie Vector</h1>
+            <h1 className="text-5xl font-headline font-bold text-primary">Jack B.</h1>
             <p className="mt-2 text-lg text-muted-foreground">ML Engineer & Creative Developer</p>
             <div className="mt-6 flex justify-center md:justify-start gap-4">
               <Button asChild>
