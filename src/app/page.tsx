@@ -1,10 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Github, Rss } from "lucide-react";
-import { latestPost, type Repository } from "@/lib/data";
+import { type Repository } from "@/lib/data";
 import RepositoryCard from "@/components/repository-card";
 import BlogCard from "@/components/blog-card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { Suspense } from "react";
 
 async function getRepositories(repoNames: string[]): Promise<Repository[]> {
   const repoPromises = repoNames.map(async (name) => {
@@ -36,6 +37,18 @@ async function getRepositories(repoNames: string[]): Promise<Repository[]> {
 
   const results = await Promise.all(repoPromises);
   return results.filter((repo): repo is Repository => repo !== null);
+}
+
+function BlogCardSkeleton() {
+    return (
+        <div className="bg-card/80 border-border shadow-lg shadow-background rounded-lg p-6 animate-pulse">
+            <div className="h-6 bg-muted rounded w-3/4 mb-4"></div>
+            <div className="h-4 bg-muted rounded w-1/4 mb-6"></div>
+            <div className="h-4 bg-muted rounded w-full mb-2"></div>
+            <div className="h-4 bg-muted rounded w-full mb-2"></div>
+            <div className="h-4 bg-muted rounded w-5/6"></div>
+        </div>
+    );
 }
 
 export default async function Home() {
@@ -84,7 +97,9 @@ export default async function Home() {
 
         <section className="mb-16">
           <h2 className="text-3xl font-headline font-bold mb-6">Latest Post</h2>
-          <BlogCard post={latestPost} />
+          <Suspense fallback={<BlogCardSkeleton />}>
+            <BlogCard />
+          </Suspense>
         </section>
 
         <section>
