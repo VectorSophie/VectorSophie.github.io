@@ -128,7 +128,8 @@ export default async function Home() {
       </main>
 
       <footer className="py-8 text-center text-muted-foreground border-t mt-12">
-        <p>&copy; {new Date().getFullYear()} Sophie Vector. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} VectorSophie. All rights reserved.</p>
+        <p>Made with next.js, vercel and love.</p>
       </footer>
     </div>
   );
