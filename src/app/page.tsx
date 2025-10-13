@@ -94,7 +94,7 @@ export default async function Home() {
           </Avatar>
           <div>
             <h1 className="text-5xl font-headline font-bold text-primary">Sophie Vector</h1>
-            <p className="mt-2 text-lg text-muted-foreground">Creative Developer | Tech Enthusiast | Blogger</p>
+            <p className="mt-2 text-lg text-muted-foreground">ML Engineer & Creative Developer</p>
             <div className="mt-6 flex justify-center md:justify-start gap-4">
               <Button asChild>
                 <a href="https://github.com/VectorSophie" target="_blank" rel="noopener noreferrer">
