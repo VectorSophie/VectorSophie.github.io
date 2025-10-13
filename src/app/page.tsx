@@ -1,13 +1,54 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Github, Rss } from "lucide-react";
-import { repositories, latestPost } from "@/lib/data";
+import { latestPost, type Repository } from "@/lib/data";
 import RepositoryCard from "@/components/repository-card";
 import BlogCard from "@/components/blog-card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 
+async function getRepositories(repoNames: string[]): Promise<Repository[]> {
+  const repoPromises = repoNames.map(async (name) => {
+    try {
+      const response = await fetch(`https://api.github.com/repos/VectorSophie/${name}`, {
+        // Optional: Add a personal access token for higher rate limits
+        // headers: {
+        //   Authorization: `token ${process.env.GITHUB_TOKEN}`,
+        // },
+        next: { revalidate: 3600 } // Revalidate every hour
+      });
+      if (!response.ok) {
+        console.error(`Failed to fetch repo ${name}: ${response.statusText}`);
+        return null;
+      }
+      const data = await response.json();
+      return {
+        name: data.name,
+        url: data.html_url,
+        description: data.description,
+        language: data.language,
+        stars: data.stargazers_count,
+      };
+    } catch (error) {
+      console.error(`Error fetching repo ${name}:`, error);
+      return null;
+    }
+  });
+
+  const results = await Promise.all(repoPromises);
+  return results.filter((repo): repo is Repository => repo !== null);
+}
+
 export default async function Home() {
   const avatarImage = PlaceHolderImages.find(p => p.id === 'avatar');
+  const repoNames = [
+    'OpenFrontIO',
+    'Storytime',
+    'Arknights-ClassPredictor',
+    'LCB-ID-TLs',
+    'indicamp',
+    'StructGen'
+  ];
+  const repositories = await getRepositories(repoNames);
 
   return (
     <div className="flex min-h-screen w-full flex-col">

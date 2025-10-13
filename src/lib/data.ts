@@ -6,51 +6,6 @@ export type Repository = {
   stars: number;
 };
 
-export const repositories: Repository[] = [
-  {
-    name: 'neon-engine',
-    url: 'https://github.com/VectorSophie/neon-engine',
-    description: 'A lightweight 2D game engine with a focus on neon aesthetics and performance.',
-    language: 'TypeScript',
-    stars: 128,
-  },
-  {
-    name: 'cyber-notes',
-    url: 'https://github.com/VectorSophie/cyber-notes',
-    description: 'A futuristic note-taking app with markdown support and a customizable interface.',
-    language: 'JavaScript',
-    stars: 256,
-  },
-  {
-    name: 'data-synthesizer',
-    url: 'https://github.com/VectorSophie/data-synthesizer',
-    description: 'A Python tool for generating realistic synthetic datasets for machine learning.',
-    language: 'Python',
-    stars: 310,
-  },
-  {
-    name: 'portfolio-v1',
-    url: 'https://github.com/VectorSophie/portfolio-v1',
-    description: 'The first version of my personal portfolio website, built with pure HTML and CSS.',
-    language: 'HTML',
-    stars: 42,
-  },
-  {
-    name: 'go-blockchain',
-    url: 'https://github.com/VectorSophie/go-blockchain',
-    description: 'A simple blockchain implementation written in Go to understand the fundamentals.',
-    language: 'Go',
-    stars: 99,
-  },
-  {
-    name: 'dotfiles',
-    url: 'https://github.com/VectorSophie/dotfiles',
-    description: 'My personal development environment configurations for zsh, vim, and more.',
-    language: 'TypeScript',
-    stars: 75,
-  },
-];
-
 export type BlogPost = {
   title: string;
   url: string;
