@@ -4,7 +4,6 @@ import { Github, Rss } from "lucide-react";
 import { type Repository } from "@/lib/data";
 import RepositoryCard from "@/components/repository-card";
 import BlogCard from "@/components/blog-card";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Suspense } from "react";
 
 async function getRepositories(repoNames: string[]): Promise<Repository[]> {
@@ -39,6 +38,23 @@ async function getRepositories(repoNames: string[]): Promise<Repository[]> {
   return results.filter((repo): repo is Repository => repo !== null);
 }
 
+async function getGithubProfile(username: string) {
+  try {
+    const response = await fetch(`https://api.github.com/users/${username}`, {
+      next: { revalidate: 3600 } // Revalidate every hour
+    });
+    if (!response.ok) {
+      console.error(`Failed to fetch GitHub profile for ${username}: ${response.statusText}`);
+      return null;
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`Error fetching GitHub profile for ${username}:`, error);
+    return null;
+  }
+}
+
+
 function BlogCardSkeleton() {
     return (
         <div className="bg-card/80 border-border shadow-lg shadow-background rounded-lg p-6 animate-pulse">
@@ -52,7 +68,6 @@ function BlogCardSkeleton() {
 }
 
 export default async function Home() {
-  const avatarImage = PlaceHolderImages.find(p => p.id === 'avatar');
   const repoNames = [
     'OpenFrontIO',
     'Storytime',
@@ -62,17 +77,17 @@ export default async function Home() {
     'StructGen'
   ];
   const repositories = await getRepositories(repoNames);
+  const profile = await getGithubProfile('VectorSophie');
 
   return (
     <div className="flex min-h-screen w-full flex-col">
       <main className="flex-1 container mx-auto p-4 md:p-8 lg:p-12">
         <section className="flex flex-col md:flex-row items-center gap-8 mb-16 text-center md:text-left">
           <Avatar className="w-28 h-28 border-2 border-primary shadow-lg shadow-primary/20">
-            {avatarImage && (
+            {profile && (
               <AvatarImage 
-                src={avatarImage.imageUrl} 
-                alt="A placeholder for Sophie Vector"
-                data-ai-hint={avatarImage.imageHint}
+                src={profile.avatar_url} 
+                alt="Sophie Vector's GitHub avatar"
               />
             )}
             <AvatarFallback>SV</AvatarFallback>
