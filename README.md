@@ -1,5 +1,3 @@
-# Firebase Studio
+# Jack B.'s github page
 
-This is a NextJS starter in Firebase Studio.
-
-To get started, take a look at src/app/page.tsx.
+made with nextjs
