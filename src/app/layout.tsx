@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'Neon Portfolio',
+  title: 'Jack B. Github page',
   description: 'A personal portfolio for Sophie Vector.',
 };
 
