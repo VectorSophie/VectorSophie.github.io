@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { summarizeBlogPost } from "@/ai/flows/summarize-blog-post";
 import { getLatestBlogPost } from "@/ai/flows/get-latest-blog-post";
 import type { BlogPost } from "@/lib/data";
