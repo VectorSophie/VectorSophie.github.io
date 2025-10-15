@@ -11,11 +11,7 @@ async function getRepositories(repoNames: string[]): Promise<Repository[]> {
   const repoPromises = repoNames.map(async (name) => {
     try {
       const response = await fetch(`https://api.github.com/repos/VectorSophie/${name}`, {
-        // Optional: Add a personal access token for higher rate limits
-        // headers: {
-        //   Authorization: `token ${process.env.GITHUB_TOKEN}`,
-        // },
-        next: { revalidate: 3600 } // Revalidate every hour
+        cache: "no-store" // no cache instead of refreshing
       });
       if (!response.ok) {
         console.error(`Failed to fetch repo ${name}: ${response.statusText}`);
@@ -42,7 +38,7 @@ async function getRepositories(repoNames: string[]): Promise<Repository[]> {
 async function getGithubProfile(username: string) {
   try {
     const response = await fetch(`https://api.github.com/users/${username}`, {
-      next: { revalidate: 3600 } // Revalidate every hour
+      cache: "no-store" // same here
     });
     if (!response.ok) {
       console.error(`Failed to fetch GitHub profile for ${username}: ${response.statusText}`);
