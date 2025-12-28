@@ -167,7 +167,6 @@ export default async function Home() {
                       <TechIcon name="Docker" icon="devicon-docker-plain colored" />
                       <TechIcon name="Git" icon="devicon-git-plain colored" />
                       <TechIcon name="Github Actions" icon="devicon-githubactions-plain" />
-                      <TechIcon name="Github Pages" icon="devicon-github-original" />
                       <TechIcon name="Vercel" icon="devicon-vercel-plain" />
                     </div>
                   </div>
