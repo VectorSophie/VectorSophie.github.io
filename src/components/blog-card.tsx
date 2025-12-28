@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 import { summarizeBlogPost } from "@/ai/flows/summarize-blog-post";
-import { getLatestBlogPost } from "@/ai/flows/get-latest-blog-post";
+import { getLatestBlogPost } from "@/ai/flows/get-naver-post";
 import type { BlogPost } from "@/lib/data";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarDays } from "lucide-react";
