@@ -4,73 +4,39 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-  .dark {
-    --background: 0 0% 13%;
-    --foreground: 210 20% 90%;
-    --card: 0 0% 16%;
-    --card-foreground: 210 20% 90%;
-    --popover: 0 0% 13%;
-    --popover-foreground: 210 20% 90%;
-    --primary: 223 100% 79%;
-    --primary-foreground: 223 50% 15%;
-    --secondary: 220 15% 25%;
-    --secondary-foreground: 210 20% 90%;
-    --muted: 220 15% 25%;
-    --muted-foreground: 215 15% 55%;
-    --accent: 182 100% 74%;
-    --accent-foreground: 182 50% 15%;
+    /* ── Shadcn/ui system variables (mapped to lab palette) ── */
+    --background: 40 28% 93%;
+    --foreground: 214 10% 30%;
+    --card: 40 16% 88%;
+    --card-foreground: 214 10% 30%;
+    --popover: 40 28% 93%;
+    --popover-foreground: 214 10% 30%;
+    --primary: 195 36% 63%;
+    --primary-foreground: 40 28% 93%;
+    --secondary: 40 16% 88%;
+    --secondary-foreground: 214 10% 30%;
+    --muted: 40 16% 88%;
+    --muted-foreground: 210 8% 51%;
+    --accent: 195 54% 78%;
+    --accent-foreground: 214 10% 30%;
     --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 15% 25%;
-    --input: 220 15% 25%;
-    --ring: 223 100% 79%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --destructive-foreground: 40 28% 93%;
+    --border: 40 12% 82%;
+    --input: 40 12% 82%;
+    --ring: 195 36% 63%;
+    --radius: 2px;
+
+    /* ── Lab-specific raw tokens ── */
+    --lab-ivory:  #F3EFE7;
+    --lab-white:  #E8E5DD;
+    --lab-graphite: #444B54;
+    --lab-steel:  #7A848E;
+    --lab-blue:   #7FB7C9;
+    --lab-sensor: #A8D8E8;
+    --lab-amber:  #D9B36A;
+    --lab-border: #CCC9C1;
+    --lab-border-active: #7FB7C9;
+    --lab-green:  #7BBF8E;
   }
 }
 
@@ -79,6 +45,141 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[#F3EFE7] text-[#444B54] antialiased;
+    font-family: 'Inter', sans-serif;
   }
+}
+
+/* ── Lab typography utilities ────────────────────────── */
+@layer utilities {
+  .font-mono-lab {
+    font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  }
+
+  .lab-label {
+    font-family: 'IBM Plex Mono', 'Courier New', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--lab-steel);
+    line-height: 1.4;
+  }
+
+  .lab-mono {
+    font-family: 'IBM Plex Mono', 'Courier New', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--lab-graphite);
+  }
+
+  .lab-status {
+    font-family: 'IBM Plex Mono', 'Courier New', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .lab-display {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    line-height: 0.88;
+  }
+
+  .lab-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+}
+
+/* ── Keyframe animations ─────────────────────────────── */
+
+/* Vertical scan sweep across a module */
+@keyframes scan-sweep {
+  0%   { top: -1px; opacity: 0; }
+  4%   { opacity: 0.55; }
+  92%  { opacity: 0.35; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* Status dot pulse */
+@keyframes dot-pulse {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 1; }
+}
+
+/* Slow ambient rotation for decorative rings */
+@keyframes ambient-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Rare screen flicker */
+@keyframes instrument-flicker {
+  0%, 89%, 91%, 94%, 100% { opacity: 1; }
+  90%, 93%                 { opacity: 0.88; }
+}
+
+/* Progress bar loading fill */
+@keyframes bar-fill {
+  from { width: 0; }
+  to   { width: var(--target-width, 70%); }
+}
+
+/* Subtle reading line sweep (horizontal shimmer on cards) */
+@keyframes read-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ── Reusable animation classes ──────────────────────── */
+
+.scan-active {
+  animation: scan-sweep 2.8s linear forwards;
+}
+
+.pulse-dot {
+  animation: dot-pulse 2.2s ease-in-out infinite;
+}
+
+.pulse-dot-fast {
+  animation: dot-pulse 1s ease-in-out infinite;
+}
+
+/* Module hover: border highlight handled by Tailwind group-hover */
+
+/* Instrument panel active glow (subtle) */
+.module-active-glow {
+  box-shadow: 0 0 0 1px var(--lab-blue), inset 0 0 24px rgba(127, 183, 201, 0.04);
+}
+
+/* Corner marks rendered as real DOM elements inside .lab-module */
+.lab-corner {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  transition: border-color 0.3s ease, opacity 0.3s ease;
+  border-color: var(--lab-steel);
+  opacity: 0.45;
+}
+.lab-corner-tl { top: 0; left: 0;  border-top: 1px solid; border-left: 1px solid; }
+.lab-corner-tr { top: 0; right: 0; border-top: 1px solid; border-right: 1px solid; }
+.lab-corner-bl { bottom: 0; left: 0;  border-bottom: 1px solid; border-left: 1px solid; }
+.lab-corner-br { bottom: 0; right: 0; border-bottom: 1px solid; border-right: 1px solid; }
+
+/* Active module: corners go blue */
+.lab-module-active .lab-corner {
+  border-color: var(--lab-blue);
+  opacity: 0.8;
+}
+
+/* Hover: corners go blue */
+.group:hover .lab-corner {
+  border-color: var(--lab-blue);
+  opacity: 0.7;
 }
