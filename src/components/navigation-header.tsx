@@ -7,8 +7,9 @@ import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
   { href: "/",        code: "S-00", label: "HOME" },
-  { href: "/blogs",   code: "S-01", label: "LOG" },
-  { href: "/projects",code: "S-02", label: "COMPUTE" },
+  { href: "/lab",     code: "S-01", label: "LAB" },
+  { href: "/blogs",   code: "S-02", label: "LOG" },
+  { href: "/projects",code: "S-03", label: "COMPUTE" },
 ];
 
 export default function NavigationHeader() {
@@ -24,7 +25,7 @@ export default function NavigationHeader() {
     return () => clearInterval(id);
   }, []);
 
-  const isHome = pathname === "/";
+  const isHome = pathname === "/lab";
 
   return (
     <header className={cn(
@@ -43,7 +44,7 @@ export default function NavigationHeader() {
             <span className={cn("w-2 h-2 rounded-full opacity-80", isHome ? "bg-[#7BBF8E]" : "bg-lab-green")} />
           </div>
 
-          <Link href="/" className={cn(
+          <Link href="/lab" className={cn(
             "lab-mono transition-colors",
             isHome ? "text-[#7ABAC8] hover:text-[#DEF0F5]" : "text-lab-graphite hover:text-lab-blue"
           )}>
