@@ -75,6 +75,7 @@ export default function JackExe() {
               </div>
               <nav className="links" aria-label="Links">
                 <a className="btn primary" href={CONTACT.github}>GitHub</a>
+                <a className="btn" href={CONTACT.x}>X</a>
                 <a className="btn" href="#w-idx">Projects</a>
                 <a className="btn" href="#contact">Contact</a>
               </nav>
@@ -166,6 +167,9 @@ export default function JackExe() {
               <a className="ibtn" href={CONTACT.github} aria-label="GitHub profile">
                 <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h12v9H9l-3 3v-3H2z" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>
               </a>
+              <a className="ibtn" href={CONTACT.x} aria-label="X profile @ichisttot">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h3l9 12h-3L2 2ZM14 2 2 14" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>
+              </a>
               <button className="ibtn" type="button" data-el="copy-mail" aria-label="Copy email address">
                 <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 3.5h13v9h-13zM1.5 3.5l6.5 5 6.5-5" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>
               </button>
@@ -186,6 +190,7 @@ export default function JackExe() {
             <ul>
               <li><span className="fi">@</span><span data-el="mail-text">{CONTACT.email}</span><span className="copied" data-el="copied" hidden>copied</span></li>
               <li><span className="fi">gh</span><a href={CONTACT.github}>github.com/VectorSophie</a></li>
+              <li><span className="fi">x</span><a href={CONTACT.x}>@ichisttot</a></li>
               <li><span className="fi">◷</span>{CONTACT.availability}</li>
             </ul>
           </div>

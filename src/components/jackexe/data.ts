@@ -126,5 +126,6 @@ export const START_TOKEN = 4;
 export const CONTACT = {
   email: "jackochesstern0@naver.com",
   github: "https://github.com/VectorSophie",
+  x: "https://x.com/ichisttot",
   availability: "Part-time · remote / online",
 };
