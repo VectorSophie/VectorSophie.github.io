@@ -62,8 +62,8 @@ The native nginx test uses an isolated single process, not a Docker container.
 Compose YAML and shell scripts were parsed/checked.
 
 Docker Engine is unavailable in the editing environment. CI is configured to
-validate merged Compose configuration, build the image and start real HTTP
-containers. Check its result before merging. ACME production issuance, renewal
+validate merged Compose configuration, build the image, start real HTTP
+containers and test HTTPS with a disposable self-signed certificate. Check its result before merging. ACME production issuance, renewal
 dry-run, installed renewal timer, image vulnerability scans, provider quotas,
 live external data and full browser visual behavior remain unverified. No
 production hosting, DNS, certificate issuance or system services were changed.

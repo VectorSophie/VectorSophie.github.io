@@ -2,7 +2,7 @@ name: Portfolio checks
 on:
   pull_request:
   push:
-    branches: [main, jack-exe-redesign]
+    branches: [main]
 permissions:
   contents: read
 jobs:
@@ -34,6 +34,8 @@ jobs:
         run: |
           docker compose up -d --wait --wait-timeout 120 nextjs nginx
           curl --fail --retry 5 --retry-delay 2 -I http://127.0.0.1:8080/
+      - name: Verify container HTTPS with a disposable self-signed certificate
+        run: sh tests/container-https-smoke.sh
       - name: Container logs
         if: failure()
         env:
@@ -43,4 +45,4 @@ jobs:
         if: always()
         env:
           HTTP_PORT: 8080
-        run: docker compose down
+        run: docker compose down --volumes
