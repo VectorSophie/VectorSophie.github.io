@@ -11,9 +11,6 @@ services:
     pids_limit: 128
     mem_limit: 768m
     cpus: 1.0
-    env_file:
-      - path: .env.local
-        required: false
     expose: ["3000"]
     volumes:
       - next-cache:/app/.next/cache

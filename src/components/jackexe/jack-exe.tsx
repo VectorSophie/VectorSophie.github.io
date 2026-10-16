@@ -75,7 +75,7 @@ export default function JackExe() {
               </div>
               <nav className="links" aria-label="Links">
                 <a className="btn primary" href={CONTACT.github}>GitHub</a>
-                <a className="btn" href="/blogs">Writing</a>
+                <a className="btn" href="#w-idx">Projects</a>
                 <a className="btn" href="#contact">Contact</a>
               </nav>
             </div>
@@ -100,7 +100,7 @@ export default function JackExe() {
               <span className="shallow grow" data-el="s-tok">—</span>
               <span className="shallow" data-el="s-lock">—</span>
             </div>
-            <p className="router-note">Illustrative routing · keyword-based, not a live AI model. Project ratings are self-assessed.</p>
+            <p className="router-note">Keyword routing demo · project ratings are self-assessed.</p>
             <p className="sr" aria-live="polite" data-el="live" />
           </section>
 
@@ -193,8 +193,7 @@ export default function JackExe() {
         <div className="foot-bottom">
           <span>© {new Date().getFullYear()} Jack (VectorSophie). All rights reserved.</span>
           <span className="foot-links">
-            <a href="/blogs">Writing</a>
-            <a href="/lab">Lab</a>
+            <a href="#w-idx">Projects</a>
             <a href={`${CONTACT.github}/VectorSophie.github.io`}>Source</a>
           </span>
         </div>

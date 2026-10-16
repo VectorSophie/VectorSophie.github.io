@@ -8,7 +8,7 @@ Do not point DNS away from Vercel until you intend to switch hosting.
 ## Local container check
 
 Requirements: Docker Engine, Compose plugin 2.24+ and available host ports.
-No API key is needed. AI summaries are off by default; blog excerpts remain.
+No API key is needed. The site is a self-contained portfolio with no AI or blog-feed services.
 
 ```sh
 HTTP_PORT=8080 docker compose up -d --build --wait nextjs nginx
@@ -78,15 +78,6 @@ twice daily with jitter; successful checks validate nginx configuration and
 reload it. Monitor failures with `journalctl -u jackexe-renew.service`; a shipped
 unit is not an installed or monitored timer.
 
-## Optional AI summaries
-
-To opt in, put `ENABLE_AI_SUMMARIES=true` and `GOOGLE_GENAI_API_KEY=...` in
-`.env.local` on the server (or in Vercel's environment settings). Neither belongs
-in the image or git. Summaries run only on the server, use bounded input/output,
-and cache each content result for a day. This limits repeated work; it is not a
-provider spending cap. Set a provider quota before enabling public traffic.
-The Genkit development console is for local use only; do not expose it publicly.
-
 ## Verification
 
 ```sh
@@ -102,3 +93,7 @@ The nginx smoke test generates a temporary self-signed certificate and exercises
 HTTP/TLS, ACME, redirects, headers, rate limiting and proxy-header handling. It
 does not issue a real certificate or modify a running deployment. A native
 nginx test does not replace a Docker build and container-level smoke test.
+
+CI also runs `npm run test:browser` against the HTTP container using its installed
+Chrome. To run that check yourself, set `CHROME_BIN` to a Chrome/Chromium executable
+and optionally `BASE_URL` (default `http://127.0.0.1:8080`).

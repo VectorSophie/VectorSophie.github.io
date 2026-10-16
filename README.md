@@ -1,10 +1,30 @@
-# Jack B.'s github page
+# jack.exe
 
-made with nexjs, vercel and love.
+VectorSophie's portfolio: a retro desktop with project cards and an interactive,
+local keyword-routing visualization. It uses Next.js, React and plain CSS.
+There are no AI API calls, blog feeds or external repository fetches.
 
-Visit https://vector-sophie-github-io.vercel.app/ for the actual page(github pages doesnt support next)
+## Run locally
 
+Use Node.js 24 and npm.
 
-Build and security validation commands are in DEPLOYMENT.md.
-Self-hosted Docker/nginx/HTTPS setup and certificate renewal are documented there;
-review remaining dependency findings and verification limits in SECURITY.md.
+```sh
+npm ci
+npm run dev
+```
+
+Open `http://localhost:3000`. No API key or environment file is needed.
+The old `/lab`, `/blogs` and `/projects` pages have been removed; projects live
+in the homepage's `experts.idx` window.
+
+## Check and build
+
+```sh
+npm test
+npm run typecheck
+npm run build
+npm run test:security
+```
+
+Docker/nginx/HTTPS deployment and renewal steps are in DEPLOYMENT.md.
+Security configuration and verification limits are in SECURITY.md.

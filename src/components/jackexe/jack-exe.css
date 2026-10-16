@@ -1,5 +1,5 @@
 /* jack.exe — a cream legacy desktop: bevelled .exe windows around one router canvas, taskbar along the bottom.
-   Everything is scoped under .jx so it doesn't leak into the Tailwind pages. */
+   Component styles are scoped under .jx. */
 .jx {
   --desk: #EDE3CB; --desk-dot: #E3D7BA;
   --face: #F6EFDD; --hi: #FFFDF6; --lite: #FBF6EA; --shadow: #B2A383; --dark: #2A2517;

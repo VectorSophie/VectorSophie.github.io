@@ -1,69 +1,57 @@
 # Security review notes
 
-Review date: 2026-10-16. These are scoped checks, not a penetration-test report.
+Review date: 2026-10-16. This records scoped checks, not a penetration test.
 
-## Changes in this branch
+## Current application
 
-- Next.js 15.3.8 -> 15.5.28, the patched 15.x version in the October 14 advisory.
-  The associated image-processing update is included. External SVG optimization
-  is disabled. Next.js's nested PostCSS is overridden to the root compatible
-  8.x dependency; the clean lockfile installs PostCSS 8.5.30.
-- Removed unused Firebase, Next/Genkit adapter and patch-package dependencies;
-  refreshed compatible dependencies without forcing framework major upgrades.
-- CSP, frame restrictions, MIME sniffing protection, referrer and browser
-  permission policies apply in Next.js on either hosting path. The CSP still
-  permits inline scripts/styles required by the current static hydration and
-  styling approach. It is not a nonce/hash-based strict CSP. Production does
-  not allow eval. Verify visual behavior in a browser before merging.
-- Blog helpers are server-only modules, not public Server Actions. AI summaries
-  default off; optional calls use bounded inputs/outputs and a daily cache.
-  Build verification checks the public Server Actions manifest is empty.
-- External data fetches have eight-second timeouts and one-hour cache windows.
-  Velog uses GraphQL variables and bounded profile/limit inputs. Naver post links
-  are restricted to expected HTTPS blog hosts; Velog URL segments are encoded.
-- Self-hosted nginx limits requests/connections/body sizes, disables unsolicited
-  websocket upgrades, overwrites forwarded client headers and does not cache
-  HTML/RSC responses. There is no blanket immutable cache header for errors.
-- Containers have constrained users, capabilities, filesystems and resources.
-  TLS setup, certificate key permissions, renewal scripts and systemd units are
-  provided. They require a real owned domain and installation on the server.
+The site is the jack.exe portfolio only. `/lab`, `/blogs` and the duplicate
+`/projects` page are removed. Project information and keyword routing are local;
+there are no AI model calls, blog feeds, repository API requests, Server Actions
+or application credentials. AI-related descriptions of portfolio projects are
+ordinary text, not running integrations.
 
-## Dependency findings still open
+Genkit, its CLI, 3D renderers, the unused UI kit, theme/toast providers and
+Tailwind were removed along with their dependencies. The interface uses React
+and plain CSS. Next.js is pinned to 15.5.28, and its nested PostCSS is overridden
+with the compatible root PostCSS dependency (8.5.30 in this lockfile).
 
-After a clean install, npm audit reports **74 affected packages**: 0 critical,
-18 high and 56 moderate. With `--omit=dev`, it reports **69 affected packages**:
-0 critical, 13 high and 56 moderate. The original full graph reported 117
-packages, including 5 critical and 39 high. These are package-level reports,
-including transitive/metavulnerability counts, not counts of independently
-exploitable vulnerabilities. Production dependency classification alone does
-not establish whether a package is in the standalone runtime bundle or reachable.
+## Headers and hosting
 
-Remaining findings primarily involve Genkit/OpenTelemetry/Google Cloud chains,
-Genkit development tooling, and Tailwind 3/glob dependencies. In particular,
-there are gRPC certificate-context and OpenTelemetry denial-of-service reports.
-Do not interpret the lack of critical findings as a clean security audit.
-Resolving all chains needs upstream compatible releases or separately tested
-framework/tooling migrations. This branch does not force incompatible major
-versions or hide the reports. CI currently gates on critical production findings
-and prints the remaining warnings; it is not a zero-vulnerability gate.
+Next.js applies CSP, MIME-sniffing protection, frame restrictions, a referrer
+policy and browser permission restrictions on both Vercel and self-hosting.
+The CSP permits inline hydration scripts and styles; it is not a strict
+nonce/hash-based policy. Production does not permit eval, external images or
+web workers. Google Fonts remain optional external resources.
 
-Reproduce with `npm audit` and `npm audit --omit=dev` against the committed
-lockfile. Advisory databases change, so later counts can differ. Build output
-also retains a Genkit/OpenTelemetry optional Jaeger-exporter resolution warning;
-Jaeger tracing is not configured or tested here. ESLint remains skipped by the
-existing configuration.
+Self-hosted nginx constrains requests, connections and body sizes, sanitizes
+forwarded headers, disables unsolicited websocket upgrades and does not cache
+HTML/RSC responses. Containers run with restricted users, capabilities,
+filesystems and resources. HTTPS setup and renewal scripts are documented in
+DEPLOYMENT.md. Real certificate issuance, renewal and timer installation require
+the owner's domain and server; no DNS or production service was changed here.
 
-## Validation and limits
+## Dependency audit
 
-Confirmed locally: clean `npm ci`, unit/DOM tests, TypeScript, production build,
-standalone HTTP/404 security headers, empty Server Actions manifest, and native
-nginx 1.30.6 HTTP/TLS smoke tests using an ephemeral self-signed certificate.
-The native nginx test uses an isolated single process, not a Docker container.
-Compose YAML and shell scripts were parsed/checked.
+The current committed dependency graph reports **0 npm audit findings** at all
+severity levels, including development dependencies. The original full graph
+reported 117 affected packages; the intermediate security pass reported 74.
+Removing the unused systems eliminated the remaining flagged dependency chains.
+CI now fails on any npm advisory, rather than allowing existing high/moderate
+findings. Audit results describe known registry advisories at a point in time,
+not the absence of all vulnerabilities. Reproduce with `npm ci` and `npm audit`.
 
-Docker Engine is unavailable in the editing environment. CI is configured to
-validate merged Compose configuration, build the image, start real HTTP
-containers and test HTTPS with a disposable self-signed certificate. Check its result before merging. ACME production issuance, renewal
-dry-run, installed renewal timer, image vulnerability scans, provider quotas,
-live external data and full browser visual behavior remain unverified. No
-production hosting, DNS, certificate issuance or system services were changed.
+## Verification
+
+Local checks cover unit/DOM behavior, TypeScript, the production build, home and
+removed-route responses, security headers, internal section links in markup and
+an empty Server Actions manifest. The native nginx smoke test checks isolated
+HTTP/TLS behavior with an ephemeral self-signed certificate.
+
+GitHub Actions additionally checks real Docker HTTP/HTTPS containers, restricted
+certificate-key access, redirects and HSTS. The browser smoke test checks real
+Chrome at desktop/mobile widths, input, pinning, keyboard controls and internal
+section links, with optional external fonts blocked. Check the latest CI result
+before merging; this document describes the checks, not a substitute for them.
+
+Live ACME issuance, renewal dry-run/timer installation, image vulnerability scans
+and a manual visual review remain outside these checks.

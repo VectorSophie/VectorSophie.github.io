@@ -11,7 +11,7 @@ const net = require('node:net');
   const port = probe.address().port;
   await new Promise(resolve => probe.close(resolve));
   const server = spawn(process.execPath, ['.next/standalone/server.js'], {
-    env: { ...process.env, PORT: String(port), HOSTNAME: '127.0.0.1', ENABLE_AI_SUMMARIES: 'false' },
+    env: { ...process.env, PORT: String(port), HOSTNAME: '127.0.0.1' },
     stdio: ['ignore', 'pipe', 'pipe'],
   });
   const logs = [];
@@ -28,7 +28,7 @@ const net = require('node:net');
       await new Promise(resolve => setTimeout(resolve, 100));
     }
     assert.ok(ready, `Standalone server failed to start: ${logs.join('')}`);
-    for (const [path, status] of [['/', 200], ['/missing-security-probe', 404]]) {
+    for (const [path, status] of [['/', 200], ['/lab', 404], ['/blogs', 404], ['/projects', 404], ['/missing-security-probe', 404]]) {
       const response = await fetch(`http://127.0.0.1:${port}${path}`);
       assert.equal(response.status, status);
       assert.equal(response.headers.get('x-powered-by'), null);
@@ -39,11 +39,16 @@ const net = require('node:net');
       assert.match(csp, /object-src 'none'/);
       assert.match(csp, /frame-ancestors 'none'/);
       assert.ok(!csp.includes('unsafe-eval'));
+      if (path === '/') {
+        const html = await response.text();
+        assert.ok(!/href="\/(lab|blogs|projects)(?:["/#?])/.test(html), 'No links to removed pages');
+        assert.ok(html.includes('href="#w-idx"'), 'Projects link points at the portfolio index');
+      }
     }
     const manifest = JSON.parse(fs.readFileSync('.next/server/server-reference-manifest.json'));
     assert.equal(Object.keys(manifest.node).length, 0, 'No public Server Actions expected');
     assert.equal(Object.keys(manifest.edge).length, 0);
-    console.log('Production smoke: home/404 headers and empty public Server Actions manifest passed');
+    console.log('Production smoke: home, removed-route 404s, security headers and empty Server Actions manifest passed');
   } finally {
     server.kill('SIGTERM');
     if (server.exitCode === null) await once(server, 'exit');
