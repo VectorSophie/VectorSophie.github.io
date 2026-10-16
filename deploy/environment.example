@@ -1,0 +1,5 @@
+# Copy to .env on the self-hosted server. Do not commit the populated .env.
+SITE_DOMAIN=portfolio.example.com
+LETSENCRYPT_EMAIL=you@example.com
+HTTP_PORT=80
+HTTPS_PORT=443

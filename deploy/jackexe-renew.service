@@ -1,0 +1,12 @@
+[Unit]
+Description=Renew jack.exe TLS certificates and reload nginx
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/jackexe
+EnvironmentFile=/opt/jackexe/.env
+ExecStart=/bin/sh /opt/jackexe/scripts/renew-certificates.sh
+TimeoutStartSec=15min

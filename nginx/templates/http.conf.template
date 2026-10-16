@@ -1,0 +1,7 @@
+# Local HTTP and ACME bootstrap only. Enable the HTTPS overlay for production.
+server {
+    listen 8080 default_server;
+    server_name ${SITE_DOMAIN};
+    include /etc/nginx/snippets/security.conf;
+    include /etc/nginx/snippets/app.conf;
+}
