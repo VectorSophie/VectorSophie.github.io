@@ -68,6 +68,8 @@ export function mountJackExe(root: HTMLElement): () => void {
     cleanups.push(() => t.removeEventListener(ev, fn as EventListener, opts));
   };
   const now = () => performance.now();
+  let disposed = false;
+  let copyTimer: number | undefined;
 
   /* ---------------- state ---------------- */
   const S = {
@@ -136,6 +138,7 @@ export function mountJackExe(root: HTMLElement): () => void {
     S.lock = { i, w: null };
     S.play = -1;
     showTok(i, t);
+    syncHTML();
     burst(1200);
   }
   function togglePin(i: number) {
@@ -180,8 +183,14 @@ export function mountJackExe(root: HTMLElement): () => void {
 
   on(el("copy-mail"), "click", () => {
     const flag = el("copied");
-    const shown = () => { flag.hidden = false; window.setTimeout(() => { flag.hidden = true; }, 1500); };
+    const shown = () => {
+      if (disposed) return;
+      flag.hidden = false;
+      window.clearTimeout(copyTimer);
+      copyTimer = window.setTimeout(() => { flag.hidden = true; }, 1500);
+    };
     const select = () => {
+      if (disposed) return;
       const r = document.createRange(); r.selectNodeContents(el("mail-text"));
       const s = getSelection(); s?.removeAllRanges(); s?.addRange(r);
     };
@@ -383,7 +392,7 @@ export function mountJackExe(root: HTMLElement): () => void {
     ctx.stroke();
   }
   function spawnRouteParticles(t: number) {
-    if (!RG) return;
+    if (!RG || reduce) return;
     const chars = Array.from(S.tok);
     const r = S.r;
     const targets = [r.top1, r.top2];
@@ -396,9 +405,9 @@ export function mountJackExe(root: HTMLElement): () => void {
 
   function drawRouter(t: number, dt: number) {
     if (!RG || !rctx) return;
-    const ctx = rctx, G = RG, r = S.r, k = 1 - Math.exp(-dt / 55);
+    const ctx = rctx, G = RG, r = S.r, k = reduce ? 1 : 1 - Math.exp(-dt / 55);
     const a = anchorLocal();
-    const prog = ease((t - S.stepAt) / 170);
+    const prog = reduce ? 1 : ease((t - S.stepAt) / 170);
     const fcs = focus();
     ctx.clearRect(0, 0, G.W, G.H);
     ctx.fillStyle = C.well;
@@ -617,7 +626,7 @@ export function mountJackExe(root: HTMLElement): () => void {
     /* history wires, oldest faintest */
     S.hist.forEach((hst, hi) => {
       const chars = Array.from(hst.tok).slice(0, 14);
-      const u = hi === 0 ? ease((t - hst.at) / 220) : 1;
+      const u = hi === 0 && !reduce ? ease((t - hst.at) / 220) : 1;
       const alpha = hi === 0 ? 1 : Math.max(0.06, 0.35 - hi * 0.05);
       const n = chars.length, iw = Math.min(18, (CW - pd * 2) / Math.max(n, 1));
       chars.forEach((ch, i) => {
@@ -823,11 +832,18 @@ export function mountJackExe(root: HTMLElement): () => void {
   const clockFmt = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Seoul", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
 
   function frame(t: number) {
+    if (disposed) return;
+    // Keep idle rendering inexpensive, especially portrait palette searches.
+    const interval = reduce ? 250 : bursting(t) || S.play >= 0 ? 1000 / 30 : 100;
+    if (document.hidden || t - last < interval) {
+      raf = requestAnimationFrame(frame);
+      return;
+    }
     const dt = Math.min(64, t - (last || t));
     last = t;
     const hot = bursting(t);
     if (S.play >= 0 && t - S.lastPlay >= (reduce ? 900 : 180)) {
-      if (S.play < TOKENS.length) { S.idx = -1; showTok(S.play, t); S.lock.i = S.play; S.play++; S.lastPlay = t; }
+      if (S.play < TOKENS.length) { S.idx = -1; S.lock.i = S.play; showTok(S.play, t); S.play++; S.lastPlay = t; }
       else S.play = -1;
     }
     drawRouter(t, dt);
@@ -837,11 +853,11 @@ export function mountJackExe(root: HTMLElement): () => void {
       triggerGlitch(t, hot ? 2 : 1);
       nextGlitch = t + (hot ? 220 + Math.random() * 300 : 3000 + Math.random() * 3000);
     }
-    if (t - lastArt > (hot ? 50 : 110)) { drawArt(t); lastArt = t; }
+    if (!reduce && t - lastArt > (hot ? 50 : 110)) { drawArt(t); lastArt = t; }
     if (t - lastRO > (hot ? 60 : 200)) { placeReadouts(t, hot); lastRO = t; }
     const mode = S.play >= 0 ? "playing" : S.hoverTok >= 0 || S.hoverExpert >= 0 ? "hover" : hot ? "routing" : "idle";
     if (sMode.textContent !== mode) { sMode.textContent = mode; tMode.textContent = mode; }
-    lamp.classList.toggle("on", hot || S.hoverTok >= 0 || Math.floor(t / 600) % 2 === 0);
+    lamp.classList.toggle("on", reduce || hot || S.hoverTok >= 0 || Math.floor(t / 600) % 2 === 0);
     const sec = Math.floor(Date.now() / 1000);
     if (sec !== lastSec) { lastSec = sec; clock.textContent = `KST ${clockFmt.format(new Date())}`; }
     raf = requestAnimationFrame(frame);
@@ -855,7 +871,7 @@ export function mountJackExe(root: HTMLElement): () => void {
 
   let started = false;
   function start() {
-    if (started) return;
+    if (started || disposed) return;
     started = true;
     layoutAll();
     showTok(START_TOKEN, now());
@@ -865,10 +881,14 @@ export function mountJackExe(root: HTMLElement): () => void {
   const fontsReady = document.fonts
     ? Promise.all([document.fonts.load(`15px "Pixelify Sans"`), document.fonts.load(`9px "Silkscreen"`)])
     : Promise.resolve();
-  fontsReady.then(start, start);
+  // Input must work even while external fonts are slow or unavailable.
+  start();
+  const refreshFonts = () => { if (!disposed) layoutAll(); };
+  fontsReady.then(refreshFonts, refreshFonts);
 
   return () => {
-    started = true;
+    disposed = true;
+    window.clearTimeout(copyTimer);
     cancelAnimationFrame(raf);
     ro.disconnect();
     titleTimers.forEach((id) => window.clearTimeout(id));

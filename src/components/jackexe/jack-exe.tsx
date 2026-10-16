@@ -52,7 +52,7 @@ export default function JackExe() {
           <section className="win" id="w-conv" aria-labelledby="t-conv">
             <Titlebar id="t-conv" title="conversion" n={2} />
             <div className="sunken" style={{ margin: 4 }}>
-              <canvas data-el="conv" id="conv" aria-label="Letters of the current token mapped onto the alphabet, then onto the experts" />
+              <canvas data-el="conv" id="conv" role="img" aria-label="Letters of the current token mapped onto the alphabet, then onto the experts" />
             </div>
             <div className="field">
               <label htmlFor="jx-word">Route your own word</label>
@@ -100,6 +100,7 @@ export default function JackExe() {
               <span className="shallow grow" data-el="s-tok">—</span>
               <span className="shallow" data-el="s-lock">—</span>
             </div>
+            <p className="router-note">Illustrative routing · keyword-based, not a live AI model. Project ratings are self-assessed.</p>
             <p className="sr" aria-live="polite" data-el="live" />
           </section>
 
