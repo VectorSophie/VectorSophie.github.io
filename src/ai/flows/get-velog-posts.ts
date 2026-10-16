@@ -1,4 +1,4 @@
-'use server';
+import 'server-only';
 /**
  * @fileOverview Fetches blog posts from a Velog profile.
  *
@@ -11,8 +11,8 @@ import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
 const GetVelogPostsInputSchema = z.object({
-  username: z.string().describe('The username of the Velog blog.'),
-  limit: z.number().optional().describe('Number of posts to fetch (default: 3)'),
+  username: z.string().regex(/^[A-Za-z0-9_-]{1,64}$/).describe('The username of the Velog blog.'),
+  limit: z.number().int().min(1).max(10).optional().describe('Number of posts to fetch (default: 3)'),
 });
 export type GetVelogPostsInput = z.infer<typeof GetVelogPostsInputSchema>;
 
@@ -40,8 +40,8 @@ const getVelogPostsFlow = ai.defineFlow(
   },
   async ({ username, limit = 3 }) => {
     const query = `
-      query {
-        posts(username: "${username}", limit: ${limit}) {
+      query Posts($username: String!, $limit: Int!) {
+        posts(username: $username, limit: $limit) {
           id
           title
           short_description
@@ -56,8 +56,9 @@ const getVelogPostsFlow = ai.defineFlow(
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query }),
-      cache: 'no-store'
+      body: JSON.stringify({ query, variables: { username, limit } }),
+      signal: AbortSignal.timeout(8000),
+      next: { revalidate: 3600 }
     });
 
     if (!response.ok) {
@@ -80,7 +81,7 @@ const getVelogPostsFlow = ai.defineFlow(
 
       return {
         title: post.title,
-        url: `https://velog.io/@${username}/${post.url_slug}`,
+        url: `https://velog.io/@${encodeURIComponent(username)}/${encodeURIComponent(post.url_slug)}`,
         publishedAt: formattedDate,
         content: post.short_description || '',
       };

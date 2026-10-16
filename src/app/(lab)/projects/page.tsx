@@ -8,7 +8,7 @@ async function getRepositories(repoNames: string[]): Promise<Repository[]> {
       try {
         const res = await fetch(
           `https://api.github.com/repos/VectorSophie/${name}`,
-          { cache: "no-store" }
+          { signal: AbortSignal.timeout(8000), next: { revalidate: 3600 } }
         );
         if (!res.ok) return null;
         const d = await res.json();

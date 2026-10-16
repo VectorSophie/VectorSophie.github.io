@@ -129,7 +129,7 @@ export default async function BlogsPage() {
             Observational Log
           </h1>
           <p className="lab-label text-lab-steel mt-2">
-            LATEST TRANSMISSIONS · NAVER BLOG · VELOG · AI-PROCESSED
+            LATEST TRANSMISSIONS · NAVER BLOG · VELOG
           </p>
         </div>
 
@@ -142,7 +142,7 @@ export default async function BlogsPage() {
           <div className="w-px h-4 bg-lab-border" aria-hidden />
           <div className="flex items-center gap-2">
             <span className="w-1 h-1 rounded-full bg-lab-blue" aria-hidden />
-            <span className="lab-label">AI SUMMARIZATION: ACTIVE</span>
+            <span className="lab-label">{process.env.ENABLE_AI_SUMMARIES === 'true' ? 'AI SUMMARIZATION: ACTIVE' : 'POST EXCERPTS'}</span>
           </div>
         </div>
 

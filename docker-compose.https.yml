@@ -1,0 +1,7 @@
+services:
+  nginx:
+    ports: ["${HTTPS_PORT:-443}:8443"]
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:?Set SITE_DOMAIN to your own domain}
+    volumes:
+      - ./nginx/templates/https.conf.template:/etc/nginx/templates/default.conf.template:ro

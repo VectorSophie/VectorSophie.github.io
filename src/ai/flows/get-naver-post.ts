@@ -1,4 +1,4 @@
-'use server';
+import 'server-only';
 /**
  * @fileOverview Fetches the latest blog post from a Naver blog RSS feed.
  *
@@ -12,7 +12,7 @@ import { z } from 'genkit';
 import { BlogPost } from '@/lib/data';
 
 const GetLatestBlogPostInputSchema = z.object({
-  blogId: z.string().describe('The ID of the Naver blog.'),
+  blogId: z.string().regex(/^[A-Za-z0-9_-]{1,64}$/).describe('The ID of the Naver blog.'),
 });
 export type GetLatestBlogPostInput = z.infer<typeof GetLatestBlogPostInputSchema>;
 
@@ -58,7 +58,7 @@ const getLatestBlogPostFlow = ai.defineFlow(
   },
   async ({ blogId }) => {
     const rssUrl = `https://blog.rss.naver.com/${blogId}.xml`;
-    const response = await fetch(rssUrl);
+    const response = await fetch(rssUrl, { signal: AbortSignal.timeout(8000), next: { revalidate: 3600 } });
     
     if (!response.ok) {
         throw new Error(`Failed to fetch RSS feed: ${response.statusText}`);
@@ -68,6 +68,7 @@ const getLatestBlogPostFlow = ai.defineFlow(
     
     const firstItemStart = xmlText.indexOf('<item>');
     const firstItemEnd = xmlText.indexOf('</item>', firstItemStart);
+    if (firstItemStart < 0 || firstItemEnd < 0) throw new Error('No items found in RSS feed');
     const itemXml = xmlText.substring(firstItemStart, firstItemEnd + '</item>'.length);
     
     if (!itemXml) {
@@ -75,7 +76,11 @@ const getLatestBlogPostFlow = ai.defineFlow(
     }
 
     const title = parseValue(itemXml, 'title');
-    const url = parseValue(itemXml, 'link');
+    const rawUrl = new URL(parseValue(itemXml, 'link'));
+    if (rawUrl.protocol !== 'https:' || !['blog.naver.com', 'm.blog.naver.com'].includes(rawUrl.hostname)) {
+      throw new Error('Unexpected Naver post URL');
+    }
+    const url = rawUrl.href;
     const rawDescription = parseValue(itemXml, 'description');
     const publishedAt = parseValue(itemXml, 'pubDate');
 
